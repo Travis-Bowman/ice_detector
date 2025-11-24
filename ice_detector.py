@@ -1,11 +1,14 @@
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+from gpiozero import LED   
+import time 
 
 MODEL_PATH = "/home/dev/Documents/python_workzone/ice_detector/models/iceNoice.keras"
 IMAGE_PATH = "/home/dev/Documents/python_workzone/ice_detector/test_images/no_ice.JPG"
 IMAGE_SIZE = (180, 180)
 ICE_THRESHOLD = 0.5   # cutoff for ICE vs NO ICE
+output_signal = LED(17)  # GPIO pin 17 for output indication
 
 def load_image(path):
     img = Image.open(path).convert("RGB")
@@ -28,9 +31,11 @@ def main():
     print(f"Ice probability: {prob_ice:.4f} → {label}")
     
     if label == "ICE":
-        pass
-    else:
-        pass
+        for _ in range(5):
+            output_signal.on()
+            time.sleep(0.5)
+            output_signal.off()
+            time.sleep(0.5)
 
 if __name__ == "__main__":
     main()
